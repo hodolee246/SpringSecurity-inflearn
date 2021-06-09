@@ -43,10 +43,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ~~~
 
-- 매번 실행 시 주어지는 문자열로 로그인 해야하는 정보는 application.properties에 id, pwd 등록해서 사용할 수 있다.
+- 매번 랜덤 문자열로 로그인 해야하는 비밀번호의 경우 application.properties 에 등록해서 간편하게 사용할 수 있다.
 
 ~~~
 spring.security.user.name=user
 spring.security.user.password=1111
 ~~~
 
+## 인증 API - Form 인증
+1. 서버 접근의 경우 인증받은 사용자만 접근할 수 있기에 인증되지 않은사용자가 방문한 경우 로그인 페이지로 이동한다.
+2. POST방식의 form data : username + password를 이용하여 로그인을 시도한다.
+3. 로그인 성공 시 SESSION 및 인증 토큰을 생성 및 저장한다. 
+4. 사용자가 자원에 재 접근할 경우 세션에 저장된 인증 토큰을 확인하여 인증을 유지한다.
+
+### configure() 메소드 설정
+~~~
+http.formLogin()                              // Form 로그인 인증 기능이 작동함
+    .loginPage("loginPage")                  // 사용자 정의 로그인 페이지
+    .defaultSuccessUrl("errorPage")          // 로그인 실패 후 이동 페이지
+    .usernameParameter("username")          // 아이디 파라미터명 설정
+    .passwordParameter("password")          // 패스워드 파라미터명 설정
+    .loginProcessingUrl("/login")           // 로그인 form action url
+    .successHandler(loginSuccessHandler())  // 로그인 성공 후 핸들러
+    .failureHandler(loginFailurHandler())   // 로그인 실패 후 핸들러
+~~~
