@@ -77,6 +77,7 @@ http.formLogin()                              // Form 로그인 인증 기능이
     .failureHandler(loginFailurHandler())   // 로그인 실패 후 핸들러
 ~~~
 
+<<<<<<< HEAD
 ## Logout
 
 로그아웃이 일어날 경우 세션, 인증토큰, 쿠키정보를 삭제하며 로그인 페이지로 이동한다.
@@ -104,3 +105,18 @@ deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업�
 
 
 
+=======
+## login Form 인증
+1. UsernamePasswordAuthenticationFilter 에서 요청 정보를 확인
+2. AutPathRequestMatcher() 에서 url 을 체크 
+	- 아닐 경우 chain.doFilter 에게 전송
+3. Authentication 객체를 만들어 username 과 password 를 담아 보낸다.
+4. AuthenticationManager 는 해당 Authentication 객체를 받아 인증처리를 한다.
+	- 인증 처리는 AuthenticationProvider 에게 위임하여 처리가 진행된다.
+	  	- 인증에 성공 시 Authentication 객체를 만들어 반환한다.
+	  	- 인증에 실패 시 AuthenticationException 을 발생 시킨다.
+	  		- 다시 UsernamePasswordAuthenticationFilter 돌아간다.
+5. AuthenticationManager 에서 반환 받은 Authentication 객체에 권한 및 user 정보를 담은 후 SecurityContext 에 전송한다.
+6. SecurityContext Authentication 정보를 저장한다.
+7. SuccessHandler() 
+>>>>>>> f1f8bb439edb9ce2a19647e7cb97265177359ecf
