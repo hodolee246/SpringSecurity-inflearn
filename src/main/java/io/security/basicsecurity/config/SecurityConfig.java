@@ -4,16 +4,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
 
 @Configuration
 @EnableWebSecurity
@@ -25,21 +18,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated();
         http
-                .formLogin()
-                .loginPage("/loginPage")
-                .defaultSuccessUrl("/")
-                .failureUrl("/login")
-                .usernameParameter("userId")
-                .passwordParameter("pwd")
-                .loginProcessingUrl("/login_proc")
-                .successHandler((httpServletRequest, httpServletResponse, authentication) -> {
-                    System.out.println("authentication : " + authentication.getName());
-                    httpServletResponse.sendRedirect("/");
+                .formLogin();
+
+        http
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .addLogoutHandler((httpServletRequest, httpServletResponse, authentication) -> {
+                    HttpSession session = httpServletRequest.getSession();
+                    session.invalidate();
                 })
-                .failureHandler((httpServletRequest, httpServletResponse, e) -> {
-                    System.out.print("exception : " + e.getMessage());
-                    httpServletResponse.sendRedirect("/login");
+                .logoutSuccessHandler((req, resp, auth) -> {
+                    resp.sendRedirect("login");
                 })
-                .permitAll();
+                .deleteCookies("remember-me");  // 로그아웃 할 경우 서버에서 만든 쿠키를 삭제함으로 해당 쿠키명을 적어주어야 한다.
     }
 }

@@ -50,11 +50,20 @@ spring.security.user.name=user
 spring.security.user.password=1111
 ~~~
 
-## 인증 API - Form 인증
-1. 서버 접근의 경우 인증받은 사용자만 접근할 수 있기에 인증되지 않은사용자가 방문한 경우 로그인 페이지로 이동한다.
-2. POST방식의 form data : username + password를 이용하여 로그인을 시도한다.
-3. 로그인 성공 시 SESSION 및 인증 토큰을 생성 및 저장한다. 
-4. 사용자가 자원에 재 접근할 경우 세션에 저장된 인증 토큰을 확인하여 인증을 유지한다.
+## Login Form 인증
+1. 사용자 인증 시도 시 UsernamePasswordauthenticationFilter 에서 사용자 정보를 확인한다
+2. AntPathRequestMatcher 에서 로그인 정보를 확인한다.
+    - 정보가 미 일치 시 다른 필터로 이동
+3. 정보가 일치 시 Authentication 에서 사용자가 입력한 로그인 값을 저장하여 인증 객체를 생성한다.
+4. AuthenticationManager 에서 인증 처리를 하는데 AuthenticationProvider 에게 인증처리를 위임한다.
+    - 인증 실패 시 AuthenticationException 발생
+    - 인증 성공 시 권한 정보 및 인증 객체를 저장하여 AhthenticationManager 에게 전송한다.
+5. AuthenticationManager 는 인증 객체를 Authentication 에게 반환한다.
+6. Authentication 에서 인증 결과인 인증 객체를 Securitycontext 에 전송한다.
+7. SecurityContext 에서 인증 객체를 저장한다
+8. SuccessHandler 처리
+
+![loginForm](/md-img/loginForm인증.PNG)
 
 ### configure() 메소드 설정
 ~~~
@@ -67,3 +76,31 @@ http.formLogin()                              // Form 로그인 인증 기능이
     .successHandler(loginSuccessHandler())  // 로그인 성공 후 핸들러
     .failureHandler(loginFailurHandler())   // 로그인 실패 후 핸들러
 ~~~
+
+## Logout
+
+로그아웃이 일어날 경우 세션, 인증토큰, 쿠키정보를 삭제하며 로그인 페이지로 이동한다.
+
+~~~
+http.logout()                                           // 로그아웃 처리
+    .logoutUrl("/logout")                               // 로그아웃 처리 URL
+    .logoutSuccessUrl("/login")                         // 로그아웃 성공 후 이동 페이지
+    .deleteCookies("JSESSIONIN", "remember-me")         // 로그아웃 후 쿠키 삭제
+    .addLogouthandler(logouthandler())                  // 로그아웃 핸들러
+    .logoutSuccessHandler(logoutSuccessHandler())       // 로그아웃 성공 후 핸들러
+~~~
+deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업이 필요하다면 로그아웃 핸들러를 이용하여 작업을 추가할 수 있다.
+
+### 로그아웃
+1. LogoutFiter가 POST방식의 로그아웃을 받는다.
+2. AntPathRequestMatcher에서 로그아웃을 요청하는건지 검사를 한다.
+    - 미 일치시 chain.doFiter 그다음 필터로 보낸다
+3. 일치 시 Authentication 에서 securityContext 에서 인증 객체를 꺼내온다.
+4. SecurityContextLogoutHandler 에서 세션 무효화, 쿠키 삭제, securityContext.clearContext() 컨텍스트에서 정보를 삭제한다.
+5. 로그아웃이 성공적 으로 끝날 경우 SimpleUrlLogoutSuccessHandler 에서 다시 login 페이지로 이동시킨다.
+
+![loginForm](/md-img/logout.PNG)
+
+
+
+
