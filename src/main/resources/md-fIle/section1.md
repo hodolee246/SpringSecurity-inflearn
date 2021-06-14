@@ -1,7 +1,7 @@
 # Spring Security
 - - -
 
-## 01. 인증 API - 스프링 시큐리티 의존성 추가
+## 프로젝트 구성 및 의존성 추가
 ~~~
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -24,7 +24,7 @@
 1. 계정 추가 권한 추가, DB 연동 등
 2. 기본적인 보안 기능 외에 시스템에서 필요로 하는 더 세부적이고 추가적인 보안기능이 필요
 
-## WebSecurityConfigurerAdapter
+## 사용자 정의 보안 기능 구현
 - security 의존성 추가했을경우 보안설정을 할 수 있는 클래스로 해당 클래스를 상속을 받아 사용할 경우 HttpSecurity 클래스의 인증 API, 인가 API를 자유롭게 정의할 수 있다.    
 - 다른요청들은 인증을 하지 않을경우 기본 폼로그인으로 이동된다.
 ~~~
@@ -50,7 +50,20 @@ spring.security.user.name=user
 spring.security.user.password=1111
 ~~~
 
-## Login Form 인증
+## Form Login 인증
+
+### configure() 메소드 설정
+~~~
+http.formLogin()                              // Form 로그인 인증 기능이 작동함
+    .loginPage("loginPage")                  // 사용자 정의 로그인 페이지
+    .defaultSuccessUrl("errorPage")          // 로그인 실패 후 이동 페이지
+    .usernameParameter("username")          // 아이디 파라미터명 설정
+    .passwordParameter("password")          // 패스워드 파라미터명 설정
+    .loginProcessingUrl("/login")           // 로그인 form action url
+    .successHandler(loginSuccessHandler())  // 로그인 성공 후 핸들러
+    .failureHandler(loginFailurHandler())   // 로그인 실패 후 핸들러
+~~~
+### 로그인 처리
 1. 사용자 인증 시도 시 UsernamePasswordauthenticationFilter 에서 사용자 정보를 확인한다
 2. AntPathRequestMatcher 에서 로그인 정보를 확인한다.
     - 정보가 미 일치 시 다른 필터로 이동
@@ -65,20 +78,7 @@ spring.security.user.password=1111
 
 ![loginForm](/md-img/loginForm인증.PNG)
 
-### configure() 메소드 설정
-~~~
-http.formLogin()                              // Form 로그인 인증 기능이 작동함
-    .loginPage("loginPage")                  // 사용자 정의 로그인 페이지
-    .defaultSuccessUrl("errorPage")          // 로그인 실패 후 이동 페이지
-    .usernameParameter("username")          // 아이디 파라미터명 설정
-    .passwordParameter("password")          // 패스워드 파라미터명 설정
-    .loginProcessingUrl("/login")           // 로그인 form action url
-    .successHandler(loginSuccessHandler())  // 로그인 성공 후 핸들러
-    .failureHandler(loginFailurHandler())   // 로그인 실패 후 핸들러
-~~~
-
-<<<<<<< HEAD
-## Logout
+## Logout 처리, LogoutFilter
 
 로그아웃이 일어날 경우 세션, 인증토큰, 쿠키정보를 삭제하며 로그인 페이지로 이동한다.
 
@@ -92,7 +92,7 @@ http.logout()                                           // 로그아웃 처리
 ~~~
 deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업이 필요하다면 로그아웃 핸들러를 이용하여 작업을 추가할 수 있다.
 
-### 로그아웃
+### 로그아웃 처리
 1. LogoutFiter가 POST방식의 로그아웃을 받는다.
 2. AntPathRequestMatcher에서 로그아웃을 요청하는건지 검사를 한다.
     - 미 일치시 chain.doFiter 그다음 필터로 보낸다
@@ -102,21 +102,21 @@ deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업�
 
 ![loginForm](/md-img/logout.PNG)
 
+## Remember Me 인증
+- 세션이 만료되고 웹 브라우저가 종료된 이후에도 애플리케이션이 사용자를 기억하는 기능
+- RememberMe 쿠기에 대한 Http 요청을 확인 후 토큰 기반 인증을 사용해 유효성을 검사하고 토근이 검증되면 로그인이 된다.
+- 사용자 라이프 사이클
+    1. 인증 성공 (Rembmer-Me 쿠키 설정)
+    2. 인증 실패(쿠키가 존재하면 쿠키 무효화)
+    3. 로그아웃(쿠키가 존재하면 쿠키 무효화)
+
+~~~
+htpp.rememberMe()
+    .rememberMeParameter("remember")        // 기본 파라미터명은 remember-me
+    .tokenValiditySeconds(3600)             // 만료시간 default 는 14일
+    .alwaysRemember(true)                   // 리멤버 기능이 활성화 되지 않아도 항상 실행 default 는 false
+    .userDetailsService(userDetailsService) // remember-me 인증 후 처리할 서비스
+~~~
+**JSESSION을 삭제하더라도 Security에서 쿠키가 있는지 확인 후 있을경우 user객체를 얻어 그 객체로 로그인을 시도한다.** 
 
 
-
-=======
-## login Form 인증
-1. UsernamePasswordAuthenticationFilter 에서 요청 정보를 확인
-2. AutPathRequestMatcher() 에서 url 을 체크 
-	- 아닐 경우 chain.doFilter 에게 전송
-3. Authentication 객체를 만들어 username 과 password 를 담아 보낸다.
-4. AuthenticationManager 는 해당 Authentication 객체를 받아 인증처리를 한다.
-	- 인증 처리는 AuthenticationProvider 에게 위임하여 처리가 진행된다.
-	  	- 인증에 성공 시 Authentication 객체를 만들어 반환한다.
-	  	- 인증에 실패 시 AuthenticationException 을 발생 시킨다.
-	  		- 다시 UsernamePasswordAuthenticationFilter 돌아간다.
-5. AuthenticationManager 에서 반환 받은 Authentication 객체에 권한 및 user 정보를 담은 후 SecurityContext 에 전송한다.
-6. SecurityContext Authentication 정보를 저장한다.
-7. SuccessHandler() 
->>>>>>> f1f8bb439edb9ce2a19647e7cb97265177359ecf
