@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import javax.servlet.http.HttpSession;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
         http
                 .formLogin();
-
+        http
+                .sessionManagement()
+                .sessionFixation().changeSessionId();
     }
 }

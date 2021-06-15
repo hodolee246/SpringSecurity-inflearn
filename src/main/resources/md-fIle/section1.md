@@ -76,7 +76,7 @@ http.formLogin()                              // Form 로그인 인증 기능이
 7. SecurityContext 에서 인증 객체를 저장한다
 8. SuccessHandler 처리
 
-![loginForm](../md-img/loginForm인증.PNG)
+![loginForm](../md-img/login_form_인증.PNG)
 
 ## Logout 처리, LogoutFilter
 
@@ -100,7 +100,7 @@ deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업�
 4. SecurityContextLogoutHandler 에서 세션 무효화, 쿠키 삭제, securityContext.clearContext() 컨텍스트에서 정보를 삭제한다.
 5. 로그아웃이 성공적 으로 끝날 경우 SimpleUrlLogoutSuccessHandler 에서 다시 login 페이지로 이동시킨다.
 
-![loginForm](../md-img/logout.PNG)
+![logout](../md-img/logout.PNG)
 
 ## Remember Me 인증
 - 세션이 만료되고 웹 브라우저가 종료된 이후에도 애플리케이션이 사용자를 기억하는 기능
@@ -137,7 +137,7 @@ htpp.rememberMe()
 8. 전부 검증이 끝날경우 새로운 Authentication 객체를 만들어 AuthenticationManager 에게 전달한다.
 9. 이후 JSESSION 을 재발급하며 사용자 정보를 담는다.
 
-![loginForm](..//md-img/rememberMe인증.PNG)
+![remember_me_인증](../md-img/remember_me_인증.PNG)
    
 ## AnonymousAuthenticationFilter
 사용자의 인증 과정이 다른 필터랑 거의 동일하게 처리가 이루어 지지만 인증을 받지 않은 사용자일 경우 익명 객체를 만들어 SecurityContext 에 해당 객체를 저장하는 점이 다르다.
@@ -155,5 +155,54 @@ htpp.rememberMe()
 4. 또한 화면에서 인증 여부 구현 시 익명사용자인지, 로그인한 사용자인지 구분가능할 수 있다.
 5. 실제로 인증을 받은 사용자가 아니기에 세션에 인증객체를 저장하지 않는다.
 
-![anonymousAuthenticationFilter](../md-img/anonymousAuthenticationFilter.PNG)
+![anonymous_authentication_filter](../md-img/anonymous_authentication_filter.PNG)
+
+## 동시 세션 제어
+
+현재 동일한 계정으로 인증을 받을때 세션의 허용 갯수 초과 시 어떻게 유지하는지 제어를 의미한다.
+
+2가지 전략으로 세션 제어를 지원
+
+1. 이전 세션을 만료시킴
+    - 이전 세션 만료 설정
+2. 지금 세션 인증 실패
+    - 2 번째 사용자 세션 차단
+    
+~~~
+http.sessionManagement()
+    .maximumSessions(1)             // 세션 최대 수
+    .maxSessionsPreventsLogin(true) // 동시 로그인 차단 (지금 세션 차단) false 설정 시 이전 세션 만료 설정
+    .invalidSessionUrl("/invalid")  // 세션이 유효하지 않을 경우 이동할 페이지
+    .expiredUrl("/expired")         // 세션이 만료된 경우 이동 할 페이지
+invalidSessionUrl() 과 expiredUrl() 을 같이 설정할 경우 invalidSessionUrl() 이 실행된다.
+~~~
+
+### 세션 고정 보호
+세션 고정 공격으로 부터 스프링은 매번 새로운 세션을 만드는 세션 고정 보호를 제공한다.
+
+### 세션 고정 공격
+세션 고정 공격은 공격자가 서버에 접속하여 세션의 아이디를 얻은 후 이를 사용자에게 주어 사용자가 공격자의 세션 쿠키를 이용해 로그인하는 경우 이루어 진다. 이경우 사용자가 보고있는 정보를 공격자가 같이 확인할 수 있다.
+
+![session_protect](../md-img/anonymous_authentication_filter.PNG)
+
+
+~~~
+http.sessionManagement()
+    .sessionFixation().changeSessionId()    // 기본 값
+                                            // none, migrateSession, new Session
+~~~
+
+### 세션 정책
+
+~~~
+http.sessionManagement()
+    .sessionCreationPolicy(SessionCreationPolicy.If_Required)
+
+SessioncreationPolicy.Always        // 스프링 시큐리티가 항상 세션 생성
+SessioncreationPolicy.If_Required   // 스프링 시큐리티가 필요 시 생성    기본 시 이 속성 사용
+SessioncreationPolicy.Never         // 생성하지 않지만 이미 존재하면 사용
+SessioncreationPolicy.Stateless     // 생성하지도 않으며 존재하지도 않음   JWT 처럼 토큰에 저장하고 인증 시 이 속성 사용
+~~~
+
+
 
