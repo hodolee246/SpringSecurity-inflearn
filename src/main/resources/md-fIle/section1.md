@@ -100,7 +100,7 @@ deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업�
 4. SecurityContextLogoutHandler 에서 세션 무효화, 쿠키 삭제, securityContext.clearContext() 컨텍스트에서 정보를 삭제한다.
 5. 로그아웃이 성공적 으로 끝날 경우 SimpleUrlLogoutSuccessHandler 에서 다시 login 페이지로 이동시킨다.
 
-![loginForm](/md-img/logout.PNG)
+![loginForm](/resources/md-img/logout.PNG)
 
 ## Remember Me 인증
 - 세션이 만료되고 웹 브라우저가 종료된 이후에도 애플리케이션이 사용자를 기억하는 기능
@@ -119,4 +119,22 @@ htpp.rememberMe()
 ~~~
 **JSESSION을 삭제하더라도 Security에서 쿠키가 있는지 확인 후 있을경우 user객체를 얻어 그 객체로 로그인을 시도한다.** 
 
+## RememberMeAuthenticationFilter
+
+### Remember Me 인증 절차
+1. 사용자의 세션이 있는지 필터를 통하여 검증
+	세션이 없을 시 RememberMeAuthenticationFilter 가 사용자의 인증을 다시 받도록 시도한다.
+2. 사용자의 재 인증 과정은 PersistentTokenBasedRememberMeService 가 사용자 토큰과 DB에 저장된 토큰이 일치한지 확인을 한다.
+3. 토큰이 일치할 경우 토큰에서 쿠키를 추출한다.
+4. 추출한 토큰이 rememberBe 인지 확인한다.
+	미 일치 시 다른 필터로 이동
+5. 토큰의 형식이 일치한지 확인한다.
+	미 정상 시 예외를 발생시킨다.
+6. 사용자의 토큰과 서버에 저장된 토큰이 일치한지 확인한다.
+	미 일치 시 예외를 발생시킨다.
+7. 토큰의 User 계정이랑 DB 에 저장된 User 계정이랑 동일한지 확인한다.
+	미 일치 시 예외를 발생시킨다.
+8. 전부 검증이 끝날경우 새로운 Authentication 객체를 만들어 AuthenticationManager 에게 전달한다.
+9. 이후 JSESSION 을 재발급하며 사용자 정보를 담는다.
+![loginForm](/resources/md-img/rememberMe인증.PNG)
 
