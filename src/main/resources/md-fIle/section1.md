@@ -76,7 +76,7 @@ http.formLogin()                              // Form 로그인 인증 기능이
 7. SecurityContext 에서 인증 객체를 저장한다
 8. SuccessHandler 처리
 
-![loginForm](/md-img/loginForm인증.PNG)
+![loginForm](../md-img/loginForm인증.PNG)
 
 ## Logout 처리, LogoutFilter
 
@@ -100,7 +100,7 @@ deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업�
 4. SecurityContextLogoutHandler 에서 세션 무효화, 쿠키 삭제, securityContext.clearContext() 컨텍스트에서 정보를 삭제한다.
 5. 로그아웃이 성공적 으로 끝날 경우 SimpleUrlLogoutSuccessHandler 에서 다시 login 페이지로 이동시킨다.
 
-![loginForm](/resources/md-img/logout.PNG)
+![loginForm](../md-img/logout.PNG)
 
 ## Remember Me 인증
 - 세션이 만료되고 웹 브라우저가 종료된 이후에도 애플리케이션이 사용자를 기억하는 기능
@@ -136,7 +136,7 @@ htpp.rememberMe()
 	미 일치 시 예외를 발생시킨다.
 8. 전부 검증이 끝날경우 새로운 Authentication 객체를 만들어 AuthenticationManager 에게 전달한다.
 9. 이후 JSESSION 을 재발급하며 사용자 정보를 담는다.
-![loginForm](/resources/md-img/rememberMe인증.PNG)
+![loginForm](..//md-img/rememberMe인증.PNG)
    
 ## AnonymousAuthenticationFilter
 사용자의 인증 과정이 다른 필터랑 거의 동일하게 처리가 이루어 지지만 인증을 받지 않은 사용자일 경우 익명 객체를 만들어 SecurityContext 에 해당 객체를 저장하는 점이 다르다.
@@ -154,6 +154,5 @@ htpp.rememberMe()
 4. 또한 화면에서 인증 여부 구현 시 익명사용자인지, 로그인한 사용자인지 구분가능할 수 있다.
 5. 실제로 인증을 받은 사용자가 아니기에 세션에 인증객체를 저장하지 않는다.
 
-![anonymousAuthenticationFilter](/resources/md-img/anonymousAuthenticationFilter.PNG)
-
+![anonymousAuthenticationFilter](../md-img/anonymousAuthenticationFilter.PNG)
 
