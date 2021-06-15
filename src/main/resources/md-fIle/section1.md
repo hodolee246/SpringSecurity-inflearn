@@ -136,6 +136,7 @@ htpp.rememberMe()
 	미 일치 시 예외를 발생시킨다.
 8. 전부 검증이 끝날경우 새로운 Authentication 객체를 만들어 AuthenticationManager 에게 전달한다.
 9. 이후 JSESSION 을 재발급하며 사용자 정보를 담는다.
+
 ![loginForm](..//md-img/rememberMe인증.PNG)
    
 ## AnonymousAuthenticationFilter
