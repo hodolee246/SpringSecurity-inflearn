@@ -205,4 +205,30 @@ SessioncreationPolicy.Stateless     // 생성하지도 않으며 존재하지도
 ~~~
 
 
+## SessionManagementFilter & ConcurrentSessionFilter
 
+### SessionManagementFilter
+1. 세션 관리
+    - 인증 시 사용자의 세션정보를 등록, 조회, 삭제 등의 세션 이력을 관리
+2. 동시적 세션 제어
+    - 동일 계정으로 접속이 허용되는 최대 세션 수를 제한
+3. 세션 고정 보호
+    - 인증 할 때마다 세션 쿠키를 새로 재발급 받아 공격자의 쿠키 조작을 방지
+4. 세션 생성 정책
+    - Always, If_Required, Never, Stateless
+    
+### ConcurrentSessionFilter    
+- 매 요청마다 현재 사용자의 세션 만료 여부 체크
+- 세션이 만료되었을 경우 즉시 만료 처리
+- Session.isExpired() == true
+    1. 로그아웃 처리
+    2. 즉시 오류 페이지 응답 (This Session has been expired)
+
+### SessionManagementFilter & ConcurrentSessionFilter 연계
+
+1. 새로운 사용자가 동일한 계정으로 로그인 시도 시 SessionManagementFilter 에서 최대 세션 허용 개수가 초과 한 경우 이전 사용자 세션을 만료 시킨다.
+2. 이전 사용자의 경우 ConcurrentSessionFilter 에서 SessionManagementFilter 에게 세션의 만료 여부에 알아보며 만료 시 로그아웃 후 오류 페이지를 응답한다.
+ 
+
+
+![session_management_filter_concurrent_session_filter_연계](../md-img/session_management_filter_concurrent_session_filter_연계.PNG)
