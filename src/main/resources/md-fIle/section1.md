@@ -137,4 +137,23 @@ htpp.rememberMe()
 8. 전부 검증이 끝날경우 새로운 Authentication 객체를 만들어 AuthenticationManager 에게 전달한다.
 9. 이후 JSESSION 을 재발급하며 사용자 정보를 담는다.
 ![loginForm](/resources/md-img/rememberMe인증.PNG)
+   
+## AnonymousAuthenticationFilter
+사용자의 인증 과정이 다른 필터랑 거의 동일하게 처리가 이루어 지지만 인증을 받지 않은 사용자일 경우 익명 객체를 만들어 SecurityContext 에 해당 객체를 저장하는 점이 다르다.
+
+1. 사용자의 요청을 받을 경우 해당 사용자의 인증객체가 SecurityContext 에 존재하는지 확인한다.
+2. 해당 객체가 존재하지 않을 경우 새로운 익명사용자 객체인 AnonymousAuthenticationToken 을 생성하여 SecurityContext 에 저장한다.
+	- 실제로 인증을 받은 사용자가 아니라면 세션에 인증객체를 저장하지 않는다. 
+3. 해당 사용자가 다른 요청을 할 경우 Security 는 SecurityContext 에 저장된 객체를 확인하여 익명 사용자인지 인증 받은 사용자인지 확인한다.
+	- 또한 화면에서 인증 여부를 통하여 익명사용자와 인증 받은 사용자를 구분할 수 있다.
+
+최초에 요청하는 사용자가 인증객체가 존재하는지 확인한다. securityContext 에 객체 존재하는지 확인
+1. 존재 시 다음 필터로 이동
+2. 미 존재 시 익명사용자용 인증객체인 AnonymousAuthenticationToken 을 생성 후 SC 에 저장한다.
+3. 추 후 SC 에서 객체가 존재하는지 확인할 때 해당 사용자가 익명사용자인지 인증 사용자인지 확인한다.
+4. 또한 화면에서 인증 여부 구현 시 익명사용자인지, 로그인한 사용자인지 구분가능할 수 있다.
+5. 실제로 인증을 받은 사용자가 아니기에 세션에 인증객체를 저장하지 않는다.
+
+![anonymousAuthenticationFilter](/resources/md-img/anonymousAuthenticationFilter.PNG)
+
 

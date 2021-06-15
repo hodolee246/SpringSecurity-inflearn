@@ -26,22 +26,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .formLogin();
 
-        http
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .addLogoutHandler((httpServletRequest, httpServletResponse, authentication) -> {
-                    HttpSession session = httpServletRequest.getSession();
-                    session.invalidate();
-                })
-                .logoutSuccessHandler((req, resp, auth) -> {
-                    resp.sendRedirect("login");
-                })
-                .deleteCookies("remember-me")  // 로그아웃 할 경우 서버에서 만든 쿠키를 삭제함으로 해당 쿠키명을 적어주어야 한다.
-        .and()
-                .rememberMe()
-                .rememberMeParameter("remember")
-                .tokenValiditySeconds(3600)
-                .userDetailsService(userDetailsService);
     }
 }
