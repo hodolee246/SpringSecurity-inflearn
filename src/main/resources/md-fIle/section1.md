@@ -229,6 +229,16 @@ SessioncreationPolicy.Stateless     // 생성하지도 않으며 존재하지도
 1. 새로운 사용자가 동일한 계정으로 로그인 시도 시 SessionManagementFilter 에서 최대 세션 허용 개수가 초과 한 경우 이전 사용자 세션을 만료 시킨다.
 2. 이전 사용자의 경우 ConcurrentSessionFilter 에서 SessionManagementFilter 에게 세션의 만료 여부에 알아보며 만료 시 로그아웃 후 오류 페이지를 응답한다.
  
-
-
 ![session_management_filter_concurrent_session_filter_연계](../md-img/session_management_filter_concurrent_session_filter_연계.PNG)
+
+### SessionManagementFilter & ConcurrentSessionFilter 인증과정
+
+1. user1 이 접속 시 세션정보를 등록 후 세션 보호정책 설정을 해준다.
+2. user2 가 동일한 계정으로 접속 시
+    1. 인증 실패 전략의 경우 Exception 발생
+    2. 세션 만료 전략인 경우 기존 세션을 만료시키며, 새로운 세션정보를 등록 및 세션 보호정책 설정을 해준다.
+3. user1 가 새로운 요청을 한 경우 세션 만료 여부를 판단하여 로그아웃 및 에러 페이지로 처리한다.
+
+![session_management_filter_concurrent_session_filter_인증과정](../md-img/session_management_filter_concurrent_session_filter_인증과정.PNG)
+
+ 
