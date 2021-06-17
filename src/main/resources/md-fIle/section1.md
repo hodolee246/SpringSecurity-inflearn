@@ -241,4 +241,31 @@ SessioncreationPolicy.Stateless     // 생성하지도 않으며 존재하지도
 
 ![session_management_filter_concurrent_session_filter_인증과정](../md-img/session_management_filter_concurrent_session_filter_인증과정.PNG)
 
- 
+ ## 권한 설정 및 표현식
+
+1. 선언적 방식
+   1. URL
+        - http.antMatchers("/users/**").hasRole("USER)
+   2. Method
+        - @PreAuthorize("hasRole('USER')")
+        - public void user() { System.out.println("user")}
+2. 동적 방식    - DB 연동 프로그래밍
+    1. URL
+    2. Method
+    
+### URL 방식
+
+~~~
+http
+    .antMatchers("/shop/**")    // 해당 요청 시 보안 검사를 한다.
+    .authorizeRequest()
+        .antMatchers("/shop/login", "/shop/users/**").permitAll()   // 해당 요청 시 허용
+        .antMAtchers("/shop/mypage").hasRole("USER")    // 해당 요청 시 USER 권한 확인
+        .antMAtchers("/shop/admin/pay").access("hasRole('ADMIN')")
+        .antMAtchers("/shop/admin/pay").access("hasRole('ADMIN') or hasRole('SYS')")
+        .anyRequest().autheticated()    // 다른 요청은 인증을 받은 사람만 접근 가능
+~~~
+
+### 표현식
+
+![표현식](../md-img/표현식.PNG)
