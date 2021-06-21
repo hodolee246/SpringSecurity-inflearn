@@ -268,7 +268,7 @@ http
 
 ### 표현식
 
-![표현식](../md-img/표현식.PNG)
+![표현식](../md-img/section1/표현식.PNG)
 
 ## ExceptionTranslationFiter, RequestCacheAwareFilter
 
@@ -284,7 +284,7 @@ http
     1. 인가 예외 처리
        - AccessDeniedHandler 에서 예외 처리하도록 제공
 
-![exception_translation_filter](../md-img/exception_translation_filter.PNG)
+![exception_translation_filter](../md-img/section1/exception_translation_filter.PNG)
 
 1. 익명사용자가 접근 시 FilterSecurityInterceptor 에서 인가예외 처리한다.
 2. 인가예외에서 remember-me 사용자 일 경우 인증예외로 처리한다.
@@ -299,4 +299,23 @@ http.exceptionHandling()
         .accessDeniedHandler(accessDeniedHandler())             // 인증 실패 시 처리
 ~~~
 
+## CSRF, CsrfFilter
 
+![CSRF](../md-img/section1/CSRF.PNG)
+
+1. 사용자가 로그인 후 쿠키를 발급받음
+2. 공격자가 사용자 이메일로 링크를 전달 (공격용 웹페이지)
+3. 사용자가 링크를 클릭
+4. 브라우저는 이미지 팡리을 받아오기 위해 공격용 URL을 연다
+5. 사용자의 승인이나 인지 없이 배송지가 등록됨으로써 공격이 완료된다.
+
+### CsrfFilter
+- 모든 요청에 랜덤하게 생성된 토큰을 HTTP 파라미터로 요구
+- 요청 시 전달되는 토큰 값과 서버에 저장된 실제 값과 비교한 후 만약 일치하지 않으면 요청은 실패한다.
+
+1. Client
+    - <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    - HTTP 메소드 : PATCH, POST, PUT, DELETE
+2. Spring Security
+    - http.csrf() : 기본 활성화 되어 있음
+    - http.csrf().disabled() : 비활성화
