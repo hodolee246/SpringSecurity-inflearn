@@ -6,6 +6,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 
 @Configuration
@@ -29,11 +33,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/admin/pay").hasRole("ADMIN")
                 .antMatchers("/admin/**").access("hasRole('ADMIN') or hasRole('SYS')")
                 .anyRequest().authenticated();
         http
-                .formLogin();
+                .formLogin()
+                .successHandler((req, resp, auth) -> {
+                    RequestCache requestCache = new HttpSessionRequestCache();
+                    SavedRequest savedRequest = requestCache.getRequest(req, resp);
+                    String redirectUrl = savedRequest.getRedirectUrl();
+                    resp.sendRedirect(redirectUrl);
+                });
+        http
+                .exceptionHandling()
+//                .authenticationEntryPoint((req, resp, e) -> resp.sendRedirect("/login"))
+                .accessDeniedHandler((req, resp, e) -> resp.sendRedirect("/denied"));
     }
 }

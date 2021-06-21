@@ -64,6 +64,8 @@ http.formLogin()                              // Form 로그인 인증 기능이
     .failureHandler(loginFailurHandler())   // 로그인 실패 후 핸들러
 ~~~
 ### 로그인 처리
+![loginForm](../md-img/login_form_인증.PNG)
+
 1. 사용자 인증 시도 시 UsernamePasswordauthenticationFilter 에서 사용자 정보를 확인한다
 2. AntPathRequestMatcher 에서 로그인 정보를 확인한다.
     - 정보가 미 일치 시 다른 필터로 이동
@@ -75,8 +77,6 @@ http.formLogin()                              // Form 로그인 인증 기능이
 6. Authentication 에서 인증 결과인 인증 객체를 Securitycontext 에 전송한다.
 7. SecurityContext 에서 인증 객체를 저장한다
 8. SuccessHandler 처리
-
-![loginForm](../md-img/login_form_인증.PNG)
 
 ## Logout 처리, LogoutFilter
 
@@ -93,14 +93,14 @@ http.logout()                                           // 로그아웃 처리
 deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업이 필요하다면 로그아웃 핸들러를 이용하여 작업을 추가할 수 있다.
 
 ### 로그아웃 처리
+![logout](../md-img/logout.PNG)
+
 1. LogoutFiter가 POST방식의 로그아웃을 받는다.
 2. AntPathRequestMatcher에서 로그아웃을 요청하는건지 검사를 한다.
     - 미 일치시 chain.doFiter 그다음 필터로 보낸다
 3. 일치 시 Authentication 에서 securityContext 에서 인증 객체를 꺼내온다.
 4. SecurityContextLogoutHandler 에서 세션 무효화, 쿠키 삭제, securityContext.clearContext() 컨텍스트에서 정보를 삭제한다.
 5. 로그아웃이 성공적 으로 끝날 경우 SimpleUrlLogoutSuccessHandler 에서 다시 login 페이지로 이동시킨다.
-
-![logout](../md-img/logout.PNG)
 
 ## Remember Me 인증
 - 세션이 만료되고 웹 브라우저가 종료된 이후에도 애플리케이션이 사용자를 기억하는 기능
@@ -122,6 +122,8 @@ htpp.rememberMe()
 ## RememberMeAuthenticationFilter
 
 ### Remember Me 인증 절차
+![remember_me_인증](../md-img/remember_me_인증.PNG)
+
 1. 사용자의 세션이 있는지 필터를 통하여 검증
 	세션이 없을 시 RememberMeAuthenticationFilter 가 사용자의 인증을 다시 받도록 시도한다.
 2. 사용자의 재 인증 과정은 PersistentTokenBasedRememberMeService 가 사용자 토큰과 DB에 저장된 토큰이 일치한지 확인을 한다.
@@ -136,8 +138,6 @@ htpp.rememberMe()
 	미 일치 시 예외를 발생시킨다.
 8. 전부 검증이 끝날경우 새로운 Authentication 객체를 만들어 AuthenticationManager 에게 전달한다.
 9. 이후 JSESSION 을 재발급하며 사용자 정보를 담는다.
-
-![remember_me_인증](../md-img/remember_me_인증.PNG)
    
 ## AnonymousAuthenticationFilter
 사용자의 인증 과정이 다른 필터랑 거의 동일하게 처리가 이루어 지지만 인증을 받지 않은 사용자일 경우 익명 객체를 만들어 SecurityContext 에 해당 객체를 저장하는 점이 다르다.
@@ -148,14 +148,14 @@ htpp.rememberMe()
 3. 해당 사용자가 다른 요청을 할 경우 Security 는 SecurityContext 에 저장된 객체를 확인하여 익명 사용자인지 인증 받은 사용자인지 확인한다.
 	- 또한 화면에서 인증 여부를 통하여 익명사용자와 인증 받은 사용자를 구분할 수 있다.
 
+![anonymous_authentication_filter](../md-img/anonymous_authentication_filter.PNG)
+
 최초에 요청하는 사용자가 인증객체가 존재하는지 확인한다. securityContext 에 객체 존재하는지 확인
 1. 존재 시 다음 필터로 이동
 2. 미 존재 시 익명사용자용 인증객체인 AnonymousAuthenticationToken 을 생성 후 SC 에 저장한다.
 3. 추 후 SC 에서 객체가 존재하는지 확인할 때 해당 사용자가 익명사용자인지 인증 사용자인지 확인한다.
 4. 또한 화면에서 인증 여부 구현 시 익명사용자인지, 로그인한 사용자인지 구분가능할 수 있다.
 5. 실제로 인증을 받은 사용자가 아니기에 세션에 인증객체를 저장하지 않는다.
-
-![anonymous_authentication_filter](../md-img/anonymous_authentication_filter.PNG)
 
 ## 동시 세션 제어
 
@@ -226,20 +226,20 @@ SessioncreationPolicy.Stateless     // 생성하지도 않으며 존재하지도
 
 ### SessionManagementFilter & ConcurrentSessionFilter 연계
 
-1. 새로운 사용자가 동일한 계정으로 로그인 시도 시 SessionManagementFilter 에서 최대 세션 허용 개수가 초과 한 경우 이전 사용자 세션을 만료 시킨다.
-2. 이전 사용자의 경우 ConcurrentSessionFilter 에서 SessionManagementFilter 에게 세션의 만료 여부에 알아보며 만료 시 로그아웃 후 오류 페이지를 응답한다.
- 
 ![session_management_filter_concurrent_session_filter_연계](../md-img/session_management_filter_concurrent_session_filter_연계.PNG)
 
+1. 새로운 사용자가 동일한 계정으로 로그인 시도 시 SessionManagementFilter 에서 최대 세션 허용 개수가 초과 한 경우 이전 사용자 세션을 만료 시킨다.
+2. 이전 사용자의 경우 ConcurrentSessionFilter 에서 SessionManagementFilter 에게 세션의 만료 여부에 알아보며 만료 시 로그아웃 후 오류 페이지를 응답한다.
+
 ### SessionManagementFilter & ConcurrentSessionFilter 인증과정
+
+![session_management_filter_concurrent_session_filter_인증과정](../md-img/session_management_filter_concurrent_session_filter_인증과정.PNG)
 
 1. user1 이 접속 시 세션정보를 등록 후 세션 보호정책 설정을 해준다.
 2. user2 가 동일한 계정으로 접속 시
     1. 인증 실패 전략의 경우 Exception 발생
     2. 세션 만료 전략인 경우 기존 세션을 만료시키며, 새로운 세션정보를 등록 및 세션 보호정책 설정을 해준다.
 3. user1 가 새로운 요청을 한 경우 세션 만료 여부를 판단하여 로그아웃 및 에러 페이지로 처리한다.
-
-![session_management_filter_concurrent_session_filter_인증과정](../md-img/session_management_filter_concurrent_session_filter_인증과정.PNG)
 
  ## 권한 설정 및 표현식
 
@@ -269,3 +269,34 @@ http
 ### 표현식
 
 ![표현식](../md-img/표현식.PNG)
+
+## ExceptionTranslationFiter, RequestCacheAwareFilter
+
+### ExceptionTranslationFilter
+
+- AuthenticationException
+    1. AuthenticationEntryPoint 호출
+        - 로그인 페이지 이동, 401 오류 코드 전달 등
+    2. 인증 예외가 발생하기 전의 요청 정보를 저장
+        - RequestCache : 사용자의 이전 요청 정보를 세션에 저장하고 이를 꺼내오는 캐시 메카니즘
+        - SaveRequest  : 사용자가 요청했던 request 파라미터 값들, 그 당시 헤더값들을 저장
+- AccessDeniedException
+    1. 인가 예외 처리
+       - AccessDeniedHandler 에서 예외 처리하도록 제공
+
+![exception_translation_filter](../md-img/exception_translation_filter.PNG)
+
+1. 익명사용자가 접근 시 FilterSecurityInterceptor 에서 인가예외 처리한다.
+2. 인가예외에서 remember-me 사용자 일 경우 인증예외로 처리한다.
+3. 인증예외의 AuthenticationEntryPoint 에서 로그인 페이지로 이동시킨다.
+    2. 또한 HttpSessionReqeustCache에서 사용자가 가고자 했던 정보를 DefaultSavedRequset에 담고 이를 세션에 저장해준다.
+
+~~~
+http.exceptionHandling()
+        // 인증예외
+        .quthenticationEntryPoint(authenticationEntryPont())    // 인증 실패 시 처리
+        // 인가예외
+        .accessDeniedHandler(accessDeniedHandler())             // 인증 실패 시 처리
+~~~
+
+
