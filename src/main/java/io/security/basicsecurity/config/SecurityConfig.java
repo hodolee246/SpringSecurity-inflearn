@@ -15,30 +15,14 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .antMatcher("/admin/**")
                 .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic();
-    }
-
-}
-
-@Configuration
-@Order(0)
-class SecurityConfig2 extends WebSecurityConfigurerAdapter {
-
-    protected void configure(HttpSecurity http) throws Exception {
+                .anyRequest().authenticated();
         http
-                .authorizeRequests()
-                .anyRequest().permitAll()
-                .and()
                 .formLogin();
     }
 
