@@ -1,7 +1,7 @@
 # 스프링 시큐리티 주요 아키텍처 이해
 ## DelegatingFilterProxy, FIlterChainProxy
 
-![delegating_filter_proxy, filter_chain_proxy](../md-img/section2/delegating_filter_proxy, filter_chain_proxy.PNG)
+![delegating_filter_proxy, filter_chain_proxy](../md-img/section2/delegating_filter_proxy,filter_chain_proxy.PNG)
 
 ### DelegatingFilterProxy
 
@@ -80,3 +80,15 @@
     - SecurityContextHolder.clearContext() : SecurityContext 기존 정보 초기화
 3. Authentication authentication = SecurityContextHolder.getContext().getAuthentication()
         
+### SecurityContextHolder, SecurityContext
+
+![security_context_holder, security_context](../md-img/section2/security_context_holder,security_context.PNG)
+
+1. 로그인 시 Authentication 객체를 만들고 인증여부를 판단한다.
+    - 실패 시 clearContext()
+    - 성공 시 SecurityContext 안에 있는 SecurityContext 에 Authentication 에 객체 정보를 변경하여 저장하며, 최종적으로 HttpSession 에 저장한다.
+    
+ 
+
+
+
