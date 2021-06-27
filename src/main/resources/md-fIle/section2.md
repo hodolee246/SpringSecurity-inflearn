@@ -88,7 +88,44 @@
     - 실패 시 clearContext()
     - 성공 시 SecurityContext 안에 있는 SecurityContext 에 Authentication 에 객체 정보를 변경하여 저장하며, 최종적으로 HttpSession 에 저장한다.
     
- 
+## SpringSecurityContextPersistentFilter
+    
+SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
 
+1. 익명 사용자
+    - 새로운 SecurityContext 객체를 생성하여 SecurityContextHolder 에 저장
+    - AnonymousAuthenticationFilter 에서 AnonymousAutenticationToken 객체를 SecurityContext 에 저장
 
+2. 인증 시
+    - 새로운 SecurityContext 객체를 생성하여 SecurityContextHolder 에 저장
+    - UsernamePasswordAuthenticationFilter 에서 인증 성공 후 SecurityContext 에 UsernamePasswordAuthenticationToken 객체를 SecurityContext 에 저장
+    - 인증이 최종 완료되면 Session 에 SecurityContext 를 저장
 
+3. 인증 후
+    - Session 에서 SecurityContext 꺼내어 SecurityContextHolder 에서 저장
+    - SecurityContext 안에 Authentication 객체가 존재하면 계속 인증을 유지한다.
+
+4. 최종 응답 시 공통
+    - SecurityContextHolder.clearContext() 메소드를 실행하여 Context 를 삭제한다.
+
+### SecurityContextPersistenceFilter
+![security_context_persistence_filter](../md-img/section2/security_context_persistence_filter.PNG)
+
+1. 사용자 요청 시 사용자 요청 인증여부를 확인한다.
+2. 인증 전 일 경우 새로운 SecurityContext 를 Holder 에서 생성한다
+3. 인증 필터가 인증을 처리하며 SecurityContextHolder 안에서 Authentication 객체를 생성해 context 에 저장한다.
+4. doFilter 이후 Session 에 Context 를 저장한다.
+5. 앞으로 인증은 Session 을 통해 SecurityContext 가 있는지 확인 후 Session 에서 꺼내 사용한다.
+
+## Authentication Flow
+
+![authentication_flow](../md-img/section2/authentication_flow.PNG)
+
+1. form 인증 로그인 요청 시
+2. UsernamePasswordAuthenticationFilter 에서 요청을 받고 Authentication 객체를 생성해 요청에 들어온 id, password 를 담고 AuthenticationManager 에게 보낸다
+3. AuthenticationManager 는 인증을 처리할 authenticationProvider 에게 인증을 위임한다.
+4. AuthenticationProvider 는 인증 객체를 검증하면서 UserDetailsService 에게 id 를 전달하며 user 객체를 요청한다
+5. UserDetailService 는 Repository 에서 유저 객체를 조회 하여 UserDetail 타입으로 반환하거나 예외를 발생시키며 인증을 종료한다.
+6. AuthenticationProvider 는 반환받은 객체와 사용자 입력 패스워드가 일치한지 확인 후 Authentication(UserDetails + authorities) 토큰 객체를 AuthenticationManager 에게 전달한다.
+7. AuthenticationManager 는 다시 filter 에게 인증객체를 다시 전달한다.
+8. filter 는 인증객체를 다시 SecurityContext 에 저장한다.
