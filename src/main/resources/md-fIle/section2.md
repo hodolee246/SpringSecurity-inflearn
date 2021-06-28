@@ -134,3 +134,22 @@ SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
 
 - 초기화 시 AuthenticationProvider 를 입력받으며  해당 목록 중에서 인증 처리 요건에 맞는 AuthenticationProvider 를 찾아 인증 처리를 위임한다.
 - 부모 ProviderManager 를 설정하여 AuthenticationProvider 를 계속 탐색할 수 있다.
+
+## AuthenticationProvider
+
+![authentication_provider](../md-img/section2/authentication_provider.PNG)
+
+1. authenticate() : 검증 메서드
+2. supports() : 검증을 할 수 있는지 여부를 판단하는 메서드
+
+- authenticate
+    - ID 검증
+        - UserDetailService : 인증을 시도하는 사용자 계정이 디비에 있는지 확인 후 UserDetails 타입으로 반환 및 예외를 발생 시킨다.
+    - password 검증
+        - ID 검증을 통과하여 받은 UserDetails 타입의 객체의 비밀번호와 사용자가 입력한 비밀번호가 일치한지 확인 및 예외를 일으킨다. (비밀번호는 passwordEncoder 에서 동일한지 비교한다.)
+    - 추가 검증
+        -  모든 인증이 통과할 경우 Authentication 객체를 생성해 user 객체와, authorities 객체를 담아 AuthenticationManager 에게 반환한다.
+        
+    
+
+
