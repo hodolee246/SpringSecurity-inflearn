@@ -129,3 +129,8 @@ SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
 6. AuthenticationProvider 는 반환받은 객체와 사용자 입력 패스워드가 일치한지 확인 후 Authentication(UserDetails + authorities) 토큰 객체를 AuthenticationManager 에게 전달한다.
 7. AuthenticationManager 는 다시 filter 에게 인증객체를 다시 전달한다.
 8. filter 는 인증객체를 다시 SecurityContext 에 저장한다.
+
+## AuthenticationManager
+
+- 초기화 시 AuthenticationProvider 를 입력받으며  해당 목록 중에서 인증 처리 요건에 맞는 AuthenticationProvider 를 찾아 인증 처리를 위임한다.
+- 부모 ProviderManager 를 설정하여 AuthenticationProvider 를 계속 탐색할 수 있다.
