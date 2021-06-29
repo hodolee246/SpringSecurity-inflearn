@@ -150,6 +150,23 @@ SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
     - 추가 검증
         -  모든 인증이 통과할 경우 Authentication 객체를 생성해 user 객체와, authorities 객체를 담아 AuthenticationManager 에게 반환한다.
         
+## Authorization, FilterSecurityInterceptor
     
+### Authorization
+당신에게 무엇이 허가 되었는지 증명하는거
 
+- 스프링 시큐리티가 지원하는 권한 계층
+    - 웹 계층 : URL 요청에 따른 메뉴 혹은 화면단위의 레벨 보안
+    - 서비스 계층 : 화면 단위가 아닌 메소드 같은 기능 단위의 레벨 보안
+    - 도메인 계층 : 객체 단위의 레벨 보안
+        
+### FilterSecurityInterceptor
+- 마지막에 위치한 필터로써 인증된 사용자에 대하여 특정 요청의 승인/거부 여부를 최종적으로 결정
+- 인증객체 없이 보호차원에 접근을 시도할 경우 AuthenticationException 을 발생
+- 인증 후 자원에 접근 가능한 권한이 존재하지 않을 경우 AccessDeniedException 을 발생
+- 권한 제어 방식 중 HTTP 자원의 보안을 처리하는 필터
+- 권한 처리를 AccessDecisionmanager 에게 맡김            
 
+![filter_security_interceptor](../md-img/section2/filter_security_interceptor.PNG)
+   
+![filter_security_interceptor2](../md-img/section2/filter_security_interceptor2.PNG)

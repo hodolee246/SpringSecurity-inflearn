@@ -21,22 +21,12 @@ public class SecurityController {
 
     @GetMapping
     public String index(HttpSession session) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityContext context = (SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-        Authentication authentication11 = context.getAuthentication();
-
         return "home";
     }
 
-    @GetMapping("/thread")
-    public String thread() {
-        new Thread(
-                () -> {
-                    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                }
-        ).start();
-
-        return "thread";
+    @GetMapping("/user")
+    public String user() {
+        return "user";
     }
 
 }
