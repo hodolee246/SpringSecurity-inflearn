@@ -165,13 +165,13 @@ SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
 - 인증객체 없이 보호차원에 접근을 시도할 경우 AuthenticationException 을 발생
 - 인증 후 자원에 접근 가능한 권한이 존재하지 않을 경우 AccessDeniedException 을 발생
 - 권한 제어 방식 중 HTTP 자원의 보안을 처리하는 필터
-- 권한 처리를 AccessDecisionmanager 에게 맡김            
+- 권한 처리를 AccessDecisionManager 에게 맡김            
 
 ![filter_security_interceptor](../md-img/section2/filter_security_interceptor.PNG)
    
 ![filter_security_interceptor2](../md-img/section2/filter_security_interceptor2.PNG)
 
-## AccessDecisionManager, AccessDecissionVoter
+## AccessDecisionManager, AccessDecisionVoter
 
 ### AccessDecisionManager ```Interface```
 - 인증 정보, 요청 정보, 권한 정보를 이용해서 사용자의 자원접근을 허용할 것인지 거부할 것인지를 최종 결정하는 주체
@@ -203,6 +203,6 @@ SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
     
 ![access_decision_manager,access_decision_voter](../md-img/section2/access_decision_manager,access_decision_voter.PNG)
 
-
-
+## 스프링 시큐리티 주요 아키텍처 이해
+Section1, Section2 모든 내용 정리
 
