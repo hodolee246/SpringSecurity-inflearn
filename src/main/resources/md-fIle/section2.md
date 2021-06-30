@@ -204,5 +204,8 @@ SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
 ![access_decision_manager,access_decision_voter](../md-img/section2/access_decision_manager,access_decision_voter.PNG)
 
 ## 스프링 시큐리티 주요 아키텍처 이해
-Section1, Section2 모든 내용 정리
+
+![시큐리티_아키텍처](../md-img/section2/시큐리티_아키텍처.PNG)
+
+Section1, Section2 모든 과정 정리
 
