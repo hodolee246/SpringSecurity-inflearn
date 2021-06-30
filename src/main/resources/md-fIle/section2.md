@@ -170,3 +170,39 @@ SecurityContext 객체의 생성, 조회, 저장 하는 필터이다.
 ![filter_security_interceptor](../md-img/section2/filter_security_interceptor.PNG)
    
 ![filter_security_interceptor2](../md-img/section2/filter_security_interceptor2.PNG)
+
+## AccessDecisionManager, AccessDecissionVoter
+
+### AccessDecisionManager ```Interface```
+- 인증 정보, 요청 정보, 권한 정보를 이용해서 사용자의 자원접근을 허용할 것인지 거부할 것인지를 최종 결정하는 주체
+- 여러 개의 Voter 들을 가질 수 있으며 Voter 들로 부터 접근 혀용, 거부, 보류에 해당하는 각각의 값을 반환 받고 판단 및 결정
+- 최종 접근 거부 시 예외 발생
+
+- 접근결정의 세가지 유형
+    1. AffirmativeBased
+        - 여러개의 Voter 클래스 중 하나라도 접근 허가로 결론을 내면 접근 허가로 판단한다.
+    2. ConsensusBased
+        - 다수결로 최종 결정한다.
+            - 동일할 경우 기본은 접근허가이다.
+            - allowIfEqualsGrantedDeniedDecisions 설정을 false 로 변경하여 접근거부로 변경할 수 있다. 
+    3. UnanimousBased
+        - 모든 Voter가 만장일치로 접근을 승인해야 하며, 그렇지 않은 경우 접근을 거부한다.
+
+### AccessDecisionVoter
+- 판단을 심사함 (위원)
+
+1. Voter 가 권한 부여 과정에서 판단하는 자료
+    - Authentication : 인증 정보 (user)
+    - FilterInvocation : 요청 정보 (antMatcher("/user"))
+    - ConfigAttributes : 권한 정보 (hasRole("USER"))
+2. 결정 방식 ```상수 값을 통해 접근 여부를 판단한다 접근 허용(1), 접근 거부(-1), 접근 보류(0)```
+    - ACCESS_GRANTED : 접근 허용(1) 
+    - ACCESS_DENIED : 접근 거부(-1)
+    - ACCESS_ABSTAIN : 접근 보류(0)
+        - Voter 가 해당 타입의 요청에 대해 결정을 내릴 수 없는 경우
+    
+![access_decision_manager,access_decision_voter](../md-img/section2/access_decision_manager,access_decision_voter.PNG)
+
+
+
+
