@@ -64,7 +64,7 @@ http.formLogin()                              // Form 로그인 인증 기능이
     .failureHandler(loginFailurHandler())   // 로그인 실패 후 핸들러
 ~~~
 ### 로그인 처리
-![loginForm](../md-img/login_form_인증.PNG)
+![loginForm](../md-img/section1/login_form_인증.PNG)
 
 1. 사용자 인증 시도 시 UsernamePasswordauthenticationFilter 에서 사용자 정보를 확인한다
 2. AntPathRequestMatcher 에서 로그인 정보를 확인한다.
@@ -93,7 +93,7 @@ http.logout()                                           // 로그아웃 처리
 deleteCookies로 특정 쿠키를 삭제할 수 있으며, 만약 추가 작업이 필요하다면 로그아웃 핸들러를 이용하여 작업을 추가할 수 있다.
 
 ### 로그아웃 처리
-![logout](../md-img/logout.PNG)
+![logout](../md-img/section1/logout.PNG)
 
 1. LogoutFiter가 POST방식의 로그아웃을 받는다.
 2. AntPathRequestMatcher에서 로그아웃을 요청하는건지 검사를 한다.
@@ -122,7 +122,7 @@ htpp.rememberMe()
 ## RememberMeAuthenticationFilter
 
 ### Remember Me 인증 절차
-![remember_me_인증](../md-img/remember_me_인증.PNG)
+![remember_me_인증](../md-img/section1/remember_me_인증.PNG)
 
 1. 사용자의 세션이 있는지 필터를 통하여 검증
 	세션이 없을 시 RememberMeAuthenticationFilter 가 사용자의 인증을 다시 받도록 시도한다.
@@ -148,7 +148,7 @@ htpp.rememberMe()
 3. 해당 사용자가 다른 요청을 할 경우 Security 는 SecurityContext 에 저장된 객체를 확인하여 익명 사용자인지 인증 받은 사용자인지 확인한다.
 	- 또한 화면에서 인증 여부를 통하여 익명사용자와 인증 받은 사용자를 구분할 수 있다.
 
-![anonymous_authentication_filter](../md-img/anonymous_authentication_filter.PNG)
+![anonymous_authentication_filter](../md-img/section1/anonymous_authentication_filter.PNG)
 
 최초에 요청하는 사용자가 인증객체가 존재하는지 확인한다. securityContext 에 객체 존재하는지 확인
 1. 존재 시 다음 필터로 이동
@@ -183,7 +183,7 @@ invalidSessionUrl() 과 expiredUrl() 을 같이 설정할 경우 invalidSessionU
 ### 세션 고정 공격
 세션 고정 공격은 공격자가 서버에 접속하여 세션의 아이디를 얻은 후 이를 사용자에게 주어 사용자가 공격자의 세션 쿠키를 이용해 로그인하는 경우 이루어 진다. 이경우 사용자가 보고있는 정보를 공격자가 같이 확인할 수 있다.
 
-![session_protect](../md-img/anonymous_authentication_filter.PNG)
+![session_protect](../md-img/section1/anonymous_authentication_filter.PNG)
 
 
 ~~~
@@ -226,14 +226,14 @@ SessioncreationPolicy.Stateless     // 생성하지도 않으며 존재하지도
 
 ### SessionManagementFilter & ConcurrentSessionFilter 연계
 
-![session_management_filter_concurrent_session_filter_연계](../md-img/session_management_filter_concurrent_session_filter_연계.PNG)
+![session_management_filter_concurrent_session_filter_연계](../md-img/section1/session_management_filter_concurrent_session_filter_연계.PNG)
 
 1. 새로운 사용자가 동일한 계정으로 로그인 시도 시 SessionManagementFilter 에서 최대 세션 허용 개수가 초과 한 경우 이전 사용자 세션을 만료 시킨다.
 2. 이전 사용자의 경우 ConcurrentSessionFilter 에서 SessionManagementFilter 에게 세션의 만료 여부에 알아보며 만료 시 로그아웃 후 오류 페이지를 응답한다.
 
 ### SessionManagementFilter & ConcurrentSessionFilter 인증과정
 
-![session_management_filter_concurrent_session_filter_인증과정](../md-img/session_management_filter_concurrent_session_filter_인증과정.PNG)
+![session_management_filter_concurrent_session_filter_인증과정](../md-img/section1/session_management_filter_concurrent_session_filter_인증과정.PNG)
 
 1. user1 이 접속 시 세션정보를 등록 후 세션 보호정책 설정을 해준다.
 2. user2 가 동일한 계정으로 접속 시
